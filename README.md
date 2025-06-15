@@ -1,24 +1,27 @@
-## ⭐ Razorpay Clone ⭐
+# Personal Portfolio v2.0
 
-It's a website that has been designed to mimic the design of the popular Indian payment gateway, Razorpay.
+This is my personal portfolio website built using HTML, CSS (TailwindCSS compiled), and JavaScript.
 
-⭕ **This Site is Fully Responsive**
-<br>
-<br>
+## Features
 
-## 📌 **Live Site URL:** <a href="https://razorpay-copy.netlify.app/">**Visit Now** 🚀</a>
+- Fully responsive design
+- Smooth animations and transitions
+- Glow hover effects
+- Projects showcase
+- Simple and fast
 
-<br>
+## Technologies
 
-## 📌 Tech Stack
+- HTML5
+- TailwindCSS (compiled CSS)
+- Vanilla JavaScript
+- AOS (Animate on Scroll)
 
-[![HTML](https://img.shields.io/badge/html5%20-%23E34F26.svg?&style=for-the-badge&logo=html5&logoColor=white)](https://github.com/prakash-naikwadi)&nbsp;
-[![CSS](https://img.shields.io/badge/css3%20-%231572B6.svg?&style=for-the-badge&logo=css3&logoColor=white)](https://github.com/prakash-naikwadi)&nbsp;
-<img alt="TailwindCSS" src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white"/>&nbsp;
-<br>
-<br>
+## Deployment
 
-## 📬 Connect With Me
+No build step required. Directly open `index.html` in browser or deploy to any static hosting like GitHub Pages, Netlify, or Vercel.
 
-- **LinkedIn** - [Indra Shekhar](https://www.linkedin.com/in/indra-shekhar/)
-- **Twitter** - [@Indra684](https://twitter.com/Indra684)
+## Contact
+
+Created by Vinay Kumar.  
+You can connect with me on [LinkedIn](https://linkedin.com/in/vinay-kumar-0810s).
