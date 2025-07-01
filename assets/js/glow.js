@@ -20,15 +20,16 @@ style.textContent = `
     height: 750px;   /* Super tall for ultra-smoothness */
     pointer-events: none;
     border-radius: 50%;
-    background: radial-gradient(
-      ellipse 55% 40% at 50% 50%,
-      rgba(255,20,147,0.55) 0%,     /* Strong, vivid center */
-      rgba(255,20,147,0.38) 25%,    /* Smooth gradiency */
-      rgba(255,20,147,0.18) 55%,
-      rgba(255,20,147,0.07) 75%,
-      rgba(255,20,147,0.01) 90%,
-      rgba(255,20,147,0) 100%
-    );
+background: radial-gradient(
+  ellipse 55% 40% at 50% 50%,
+  rgba(169, 199, 250, 0.9) 0%,   /* Bright, almost glowing white-blue core */
+  rgba(100, 150, 255, 0.7) 15%,  /* Transition to a lighter neon blue */
+  rgba(31, 81, 255, 0.5) 35%,    /* Main vibrant neon blue */
+  rgba(31, 81, 255, 0.3) 55%,
+  rgba(31, 81, 255, 0.15) 75%,
+  rgba(31, 81, 255, 0.05) 90%,
+  rgba(31, 81, 255, 0) 100%
+);
     filter: blur(12px);             /* Extra smoothness */
     mix-blend-mode: screen;
     transition: transform 0.25s cubic-bezier(.4,1.4,.6,1), opacity 0.2s;
