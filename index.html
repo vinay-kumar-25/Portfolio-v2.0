@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth dark">
-  <head>
+<head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Vinay Kumar - Portfolio</title>
@@ -36,11 +35,12 @@
         overflow-x: hidden;
         font-family: "Inter", sans-serif;
         color: theme("colors.text-light");
-        background-image: url(./images/bg.jpg); /* Optional: Background image behind Three.js */
+        background-image: url(./images/bg.jpg);
         background-position: center;
         background-attachment: fixed;
         background-size: cover;
         background-repeat: no-repeat;
+        background-color: white; /* Fallback */
       }
       #three-canvas {
         position: fixed;
@@ -79,10 +79,51 @@
       ::-webkit-scrollbar-thumb:hover {
         background: theme("colors.primary-blue.400");
       }
-    </style>
-  </head>
 
-  <body class="font-sans text-text-light bg-primary-blue-DEFAULT">
+      /* --- Glow Effect Styles --- */
+      .glow-container {
+        position: relative;
+        overflow: hidden; /* Crucial to clip the large glow div */
+        border-radius: 20px; /* Adjust if your containers have different radii */
+      }
+      .dummy-overlay {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        border-radius: inherit; /* Inherit border-radius from parent */
+        overflow: hidden; /* Crucial to clip the large glow div */
+        pointer-events: none; /* Allows clicks/hovers to pass through */
+        background: transparent;
+        z-index: 10; /* Ensure overlay is above container content but below actual content */
+      }
+      .glow {
+        position: absolute;
+        top: 0; left: 0;
+        width: 1100px;   /* Super wide for a large coverage */
+        height: 750px;   /* Super tall for ultra-smoothness */
+        pointer-events: none; /* Allows clicks/hovers to pass through */
+        border-radius: 50%; /* Makes it a circle */
+        background: radial-gradient(
+          ellipse 50% 40% at 50% 50%,
+          rgba(255, 255, 255, 0.726) 0%,     /* Bright white core */
+          rgba(255, 190, 255, 0.67) 10%,    /* Soft pink-purple */
+          rgba(200, 100, 255, 0.6) 25%,    /* Vibrant lavender */
+          rgba(158, 67, 255, 0.3) 45%,     /* Deep electric purple */
+          rgba(100, 20, 200, 0.2) 65%,     /* Darker indigo-purple */
+          rgba(50, 10, 100, 0.08) 80%,     /* Very deep purple hint */
+          rgba(0, 0, 0, 0) 100%
+        );
+        filter: blur(12px); /* Soften the glow edges */
+        mix-blend-mode: screen; /* Blends nicely with dark backgrounds */
+        transition: transform 0.25s cubic-bezier(.4,1.4,.6,1), opacity 0.2s; /* Smooth movement and fade */
+        opacity: 0; /* Initially hidden */
+        will-change: transform; /* Hint to browser for GPU acceleration */
+      }
+      /* --- End Glow Effect Styles --- */
+
+    </style>
+</head>
+
+<body class="font-sans text-text-light">
     <canvas id="three-canvas"></canvas>
 
     <header
@@ -93,7 +134,7 @@
       >
         <a
           href="#home"
-          class="text-3xl font-extrabold font-heading text-transparent leading-tight inline-block bg-gradient-to-r from-blue-400 via-blue-500 to-blue-700 bg-clip-text drop-shadow-lg  "
+          class="text-3xl font-extrabold font-heading text-transparent leading-tight inline-block bg-gradient-to-r from-blue-400 via-blue-500 to-blue-700 bg-clip-text drop-shadow-lg  "
           data-aos="fade-right"
           data-aos-delay="200"
         >
@@ -148,17 +189,6 @@
 
           <li>
             <a
-              href="#resume"
-              class="relative text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-blue-700 transition duration-300 before:absolute before:-bottom-1 before:left-0 before:w-0 before:h-0.5 before:bg-gradient-to-r before:from-blue-400 before:to-blue-700 before:rounded-full before:transition-all before:duration-300 hover:before:w-full"
-            >
-              <span
-                class="text-text-light hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-700 transition duration-300"
-                >Resume</span
-              >
-            </a>
-          </li>
-          <li>
-            <a
               href="#contact"
               class="relative text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-blue-700 transition duration-300 before:absolute before:-bottom-1 before:left-0 before:w-0 before:h-0.5 before:bg-gradient-to-r before:from-blue-400 before:to-blue-700 before:rounded-full before:transition-all before:duration-300 hover:before:w-full"
             >
@@ -188,46 +218,36 @@
             ></path>
           </svg>
         </button>
-
-
       </nav>
       
- <div
-  id="mobile-menu"
-  class="hidden md:hidden fixed z-20 flex items-center justify-center  bg-black bg-opacity-5 backdrop-blur-xl md:right-0"
->
-  <div class="bg-gradient-to-br from-[#0c0c14] to-[#2e2e3a]  border border-white/20 rounded-2xl px-6 py-8 w-[50%] max-w-xs shadow-2xl text-center text-white relative">
-    
-    <!-- Close Button -->
-    <button
-      id="close-mobile-menu"
-      class="absolute top-3 right-1 text-white hover:text-blue-400 transition"
-    >
-      <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </button>
+      <div
+        id="mobile-menu"
+        class="hidden md:hidden fixed z-20 flex items-center justify-center  bg-black bg-opacity-5 backdrop-blur-xl md:right-0"
+      >
+        <div class="bg-gradient-to-br from-[#0c0c14] to-[#2e2e3a]  border border-white/20 rounded-2xl px-6 py-8 w-[50%] max-w-xs shadow-2xl text-center text-white relative">
+          
+          <button
+            id="close-mobile-menu"
+            class="absolute top-3 right-1 text-white hover:text-blue-400 transition"
+          >
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
 
-    <!-- Navigation Links -->
-    <nav class="flex flex-col gap-6 text-lg font-semibold mt-6">
-      <a href="#home" class="hover:text-blue-400 transition">Home</a>
-      <a href="#about" class="hover:text-blue-400 transition">About</a>
-      <a href="#skills" class="hover:text-blue-400 transition">Skills</a>
-      <a href="#projects" class="hover:text-blue-400 transition">Projects</a>
-      <a href="#coding-stats" class="hover:text-blue-400 transition">Coding Stats</a>
-      <a href="#education" class="hover:text-blue-400 transition">Education</a>
-      <a href="#certificates" class="hover:text-blue-400 transition">Certificates</a>
-      <a href="#resume" class="hover:text-blue-400 transition">Resume</a>
-      <a href="#contact" class="hover:text-blue-400 transition">Contact</a>
-    </nav>
-  </div>
-</div>
-
-
-
-
-
+          <nav class="flex flex-col gap-6 text-lg font-semibold mt-6">
+            <a href="#home" class="hover:text-blue-400 transition">Home</a>
+            <a href="#about" class="hover:text-blue-400 transition">About</a>
+            <a href="#skills" class="hover:text-blue-400 transition">Skills</a>
+            <a href="#projects" class="hover:text-blue-400 transition">Projects</a>
+            <a href="#coding-stats" class="hover:text-blue-400 transition">Coding Stats</a>
+            <a href="#education" class="hover:text-blue-400 transition">Education</a>
+            <a href="#certificates" class="hover:text-blue-400 transition">Certificates</a>
+            <a href="#contact" class="hover:text-blue-400 transition">Contact</a>
+          </nav>
+        </div>
+      </div>
     </header>
 
     <section
@@ -289,10 +309,8 @@
 
     <section
       id="about"
-      class="py-20 px-6 relative z-10 my-12 max-w-6xl mx-auto rounded-3xl bg-primary-blue-950 "
+      class="py-20 px-6 relative z-10 my-12 max-w-6xl mx-auto rounded-3xl bg-primary-blue-950 glow-container border-r-2 border-t-2 border-blue-700"
     >
-      <div class="container mx-auto flex flex-col items-center">
-        <!-- Heading -->
         <h2
           class="text-4xl md:text-5xl font-semibold font-heading mb-12 text-center text-accent-blue relative inline-block pb-3"
         >
@@ -302,11 +320,9 @@
           ></span>
         </h2>
 
-        <!-- Main Content Grid -->
         <div
-          class="glow-container grid grid-cols-1 md:grid-cols-2 gap-10 items-center bg-primary-blue-900 bg-opacity-50 backdrop-blur-lg rounded-2xl p-8 md:p-14 shadow-2xl-custom border-r-2 border-t-2 border-blue-700"
+          class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center bg-primary-blue-900 bg-opacity-50 backdrop-blur-lg rounded-2xl p-8 md:p-14 shadow-2xl-custom "
         >
-          <!-- Improved Profile Photo -->
           <div
             class="flex flex-col items-center z-20"
             data-aos="zoom-in"
@@ -314,18 +330,15 @@
             data-aos-duration="1000"
           >
             <div class="relative group w-64 h-64 md:w-72 md:h-72 mx-auto">
-              <!-- Glow Border on Hover -->
               <div
                 class="absolute inset-0 rounded-full pointer-events-none transition-all duration-500 group-hover:shadow-[0_0_40px_10px_rgba(56,189,248,0.40)]"
                 aria-hidden="true"
               ></div>
-              <!-- Profile Image -->
               <img
               class="w-full h-full object-cover rounded-full border-2 border-primary-blue-500 shadow-xl transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-2 "
                 src="images/vinay.jpg"
                 alt="Profile Photo"
               />
-              <!-- Subtle Gradient Overlay -->
               <div
                 class="absolute inset-0 rounded-full bg-gradient-to-t from-primary-blue-900/70 to-transparent opacity-60 pointer-events-none"
                 aria-hidden="true"
@@ -333,7 +346,6 @@
             </div>
           </div>
 
-          <!-- About Text (2 paragraphs only) -->
           <div
             class="text-lg leading-relaxed text-slate-400 space-y-6 md:pl-6"
             data-aos="fade-left"
@@ -354,24 +366,18 @@
             </p>
           </div>
         </div>
-      </div>
+      
     </section>
 
     <section
       id="skills"
-      class="py-20 px-6 relative z-10 my-10 max-w-6xl mx-auto border-r-2 border-t-2 border-blue-600 bg-primary-blue-900 bg-opacity-40 backdrop-blur-lg rounded-2xl overflow-hidden glow-container"
+      class="py-20 px-6 relative  z-10 my-10 max-w-6xl mx-auto border-r-2 border-t-2 border-blue-600 bg-primary-blue-900 bg-opacity-40 backdrop-blur-lg rounded-2xl overflow-hidden glow-container"
       data-aos="fade-left"
       data-aos-duration="1000"
     >
-      <!-- Glow Circle -->
-      <div
-        id="glow"
-        class="absolute w-80 h-80 bg-gradient-radial from-white/40 to-transparent rounded-full blur-3xl pointer-events-none z-0 transition-transform duration-75"
-      ></div>
-
-      <div class="container mx-auto relative z-10">
+      <div class="container mx-auto relative">
         <h2
-          class="text-4xl md:text-5xl font-semibold font-heading mb-12 text-center text-accent-blue relative inline-block pb-3"
+          class="text-4xl md:text-5xl z-30 font-semibold font-heading mb-12 text-center text-accent-blue relative inline-block pb-3"
         >
           Skills
           <span
@@ -382,9 +388,8 @@
         <div
           class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8 text-center"
         >
-          <!-- React.js -->
           <div
-            class="border-l-2 border-b-2 hover:skew-z-6 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
+            class="border-l-2 border-b-2 hover:skew-z-6 z-50 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
           >
             <img
               src="assets/icons/React-Dark.svg"
@@ -397,9 +402,8 @@
               React.js
             </p>
           </div>
-          <!-- Node.js -->
           <div
-            class="border-l-2 border-b-2 hover:skew-z-6 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
+            class="border-l-2 border-b-2 hover:skew-z-6 z-50 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
           >
             <img
               src="assets/icons/NodeJS-Dark.svg"
@@ -412,9 +416,8 @@
               Node.js
             </p>
           </div>
-          <!-- Express.js -->
           <div
-            class="border-l-2 border-b-2 hover:skew-z-6 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
+            class="border-l-2 border-b-2 hover:skew-z-6 z-50 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
           >
             <img
               src="assets/icons/express-js-icon.svg"
@@ -427,9 +430,8 @@
               Express.js
             </p>
           </div>
-          <!-- MongoDB -->
           <div
-            class="border-l-2 border-b-2 hover:skew-z-6 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
+            class="border-l-2 border-b-2 hover:skew-z-6 z-50 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
           >
             <img
               src="assets/icons/MongoDB.svg"
@@ -442,9 +444,8 @@
               MongoDB
             </p>
           </div>
-          <!-- Firebase -->
           <div
-            class="border-l-2 border-b-2 hover:skew-z-6 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
+            class="border-l-2 border-b-2 hover:skew-z-6 z-50 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
           >
             <img
               src="assets/icons/Firebase-Dark.svg"
@@ -457,9 +458,22 @@
               Firebase
             </p>
           </div>
-          <!-- JavaScript -->
           <div
-            class="border-l-2 border-b-2 hover:skew-z-6 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
+            class="border-l-2 border-b-2 hover:skew-z-6 z-50 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
+          >
+            <img
+              src="assets/icons/MySQL-Dark.svg"
+              alt="MYSQL Icon"
+              class="w-12 h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
+            />
+            <p
+              class="text-primary-blue-200 font-semisemifont-semibold text-lg group-hover:-translate-y-1 transition-all duration-300"
+            >
+              MYSQL
+            </p>
+          </div>
+          <div
+            class="border-l-2 border-b-2 hover:skew-z-6 z-50 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
           >
             <img
               src="assets/icons/JavaScript.svg"
@@ -472,9 +486,8 @@
               JavaScript
             </p>
           </div>
-          <!-- Python -->
           <div
-            class="border-l-2 border-b-2 hover:skew-z-6 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
+            class="border-l-2 border-b-2 hover:skew-z-6 z-50 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
           >
             <img
               src="assets/icons/Python-Dark.svg"
@@ -487,9 +500,8 @@
               Python
             </p>
           </div>
-          <!-- C++ -->
           <div
-            class="border-l-2 border-b-2 hover:skew-z-6 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
+            class="border-l-2 border-b-2 hover:skew-z-6 z-50 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
           >
             <img
               src="assets/icons/CPP.svg"
@@ -502,9 +514,8 @@
               C++
             </p>
           </div>
-          <!-- HTML5 -->
           <div
-            class="border-l-2 border-b-2 hover:skew-z-6 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
+            class="border-l-2 border-b-2 hover:skew-z-6 z-50 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
           >
             <img
               src="assets/icons/HTML.svg"
@@ -517,9 +528,8 @@
               HTML5
             </p>
           </div>
-          <!-- CSS3 -->
           <div
-            class="border-l-2 border-b-2 hover:skew-z-6 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
+            class="border-l-2 border-b-2 hover:skew-z-6 z-50 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
           >
             <img
               src="assets/icons/CSS.svg"
@@ -532,9 +542,8 @@
               CSS3
             </p>
           </div>
-          <!-- Tailwind CSS -->
           <div
-            class="border-l-2 border-b-2 hover:skew-z-6 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
+            class="border-l-2 border-b-2 hover:skew-z-6 z-50 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
           >
             <img
               src="assets/icons/TailwindCSS-Dark.svg"
@@ -547,9 +556,8 @@
               Tailwind CSS
             </p>
           </div>
-          <!-- Git & GitHub -->
           <div
-            class="border-l-2 border-b-2 hover:skew-z-6 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
+            class="border-l-2 border-b-2 hover:skew-z-6 z-50 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
           >
             <img
               src="assets/icons/Github-Dark.svg"
@@ -567,100 +575,125 @@
     </section>
 
    <section
-  id="projects"
-  class="glow-container py-20 px-6 relative z-10 my-10 max-w-6xl mx-auto border-r-2 border-t-2 border-blue-600 bg-primary-blue-900 bg-opacity-40 backdrop-filter backdrop-blur-lg rounded-2xl"
-  data-aos="zoom-in"
-  data-aos-duration="1000"
->
-  <div class="container mx-auto">
-    <h2
-      class="text-4xl md:text-5xl font-semibold font-heading mb-12 text-center text-accent-blue relative inline-block pb-3"
+      id="projects"
+      class="py-20 px-6 relative z-10 my-10 max-w-6xl mx-auto border-r-2 border-t-2 border-blue-600 bg-primary-blue-900 bg-opacity-40 backdrop-filter backdrop-blur-lg rounded-2xl glow-container"
+      data-aos="zoom-in"
+      data-aos-duration="1000"
     >
-      Featured Projects
-      <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary-blue-500 rounded"></span>
-    </h2>
+      <div class="container mx-auto">
+        <h2
+          class="text-4xl md:text-5xl font-semibold font-heading mb-12 text-center text-accent-blue relative inline-block pb-3"
+        >
+          Featured Projects
+          <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary-blue-500 rounded"></span>
+        </h2>
 
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
 
-      <!-- Urban Spoon -->
-      <div class="bg-gradient-to-br from-primary-blue-900 to-primary-blue-700 rounded-3xl overflow-hidden z-20 shadow-xl hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent-blue/30 transform transition duration-300 flex flex-col">
-        <img src="assets/images/urbanspoon.png" alt="Urban Spoon Project" class="rounded-t-lg w-full h-56 object-cover" />
-        <div class="p-6 flex flex-col flex-grow">
-          <h3 class="text-2xl font-semibold font-heading mb-3 text-accent-blue">Urban Spoon</h3>
-          <p class="text-text-dark mb-4 flex-grow text-md">
-            Restaurant Management System: Full-stack web app with real-time ordering, live tracking, menu management, user authentication, and backend administration.
-          </p>
-          <div class="mb-4 flex flex-wrap gap-2">
-            <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">HTML</span>
-            <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">CSS</span>
-            <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">JavaScript</span>
-            <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">Firebase</span>
+          <div class="bg-gradient-to-br from-primary-blue-900 to-primary-blue-700 rounded-3xl overflow-hidden z-20 shadow-xl hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent-blue/30 transform transition duration-300 flex flex-col">
+            <img src="assets/images/urbanspoon.png" alt="Urban Spoon Project" class="rounded-t-lg w-full h-56 object-cover" />
+            <div class="p-6 flex flex-col flex-grow">
+              <h3 class="text-2xl font-semibold font-heading mb-3 text-accent-blue">Urban Spoon</h3>
+              <p class="text-text-dark mb-4 flex-grow text-md">
+                Restaurant Management System: Full-stack web app with real-time ordering, live tracking, menu management, user authentication, and backend administration.
+              </p>
+              <div class="mb-4 flex flex-wrap gap-2">
+                <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">HTML</span>
+                <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">CSS</span>
+                <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">JavaScript</span>
+                <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">Firebase</span>
+              </div>
+              <div class="flex justify-between items-center mt-auto">
+                <a href="https://urban-spoon-git-master-vinay-kumar-25s-projects.vercel.app/main_page/index.html" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-2 transition-all duration-300 bg-gradient-to-r from-[#0575E6] via-[#021B79] to-[#0575E6] bg-[length:200%_auto] bg-right hover:bg-left text-white rounded-full border border-blue-600">Live Demo</a>
+                <a href="https://github.com/vinay-kumar-25/Urban-Spoon" target="_blank" rel="noopener noreferrer" class="inline-block text-accent-blue hover:text-accent-blue-light transition duration-300 flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0l-6 6"></path>
+                  </svg>
+                  GitHub
+                </a>
+              </div>
+            </div>
           </div>
-          <div class="flex justify-between items-center mt-auto">
-            <a href="https://urban-spoon-git-master-vinay-kumar-25s-projects.vercel.app/main_page/index.html" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-2 transition-all duration-300 bg-gradient-to-r from-[#0575E6] via-[#021B79] to-[#0575E6] bg-[length:200%_auto] bg-right hover:bg-left text-white rounded-full border border-blue-600">Live Demo</a>
-            <a href="https://github.com/vinay-kumar-25/Urban-Spoon" target="_blank" rel="noopener noreferrer" class="inline-block text-accent-blue hover:text-accent-blue-light transition duration-300 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0l-6 6"></path>
-              </svg>
-              GitHub
-            </a>
-          </div>
-        </div>
-      </div>
 
-      <!-- Razorpay Clone (restyled) -->
-      <div class="bg-gradient-to-br from-primary-blue-900 to-primary-blue-700 rounded-3xl overflow-hidden z-20 shadow-xl hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent-blue/30 transform transition duration-300 flex flex-col">
-        <img src="assets/images/razorpay.png" alt="Razorpay Clone" class="rounded-t-lg w-full h-56 object-cover" />
-        <div class="p-6 flex flex-col flex-grow">
-          <h3 class="text-2xl font-semibold font-heading mb-3 text-accent-blue">Razorpay Clone</h3>
-          <p class="text-text-dark mb-4 flex-grow text-md">
-            Razorpay homepage frontend clone with full responsiveness, TailwindCSS design, and interactive UI components.
-          </p>
-          <div class="mb-4 flex flex-wrap gap-2">
-            <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">HTML</span>
-            <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">Tailwind</span>
-            <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">Vite</span>
+          <div class="bg-gradient-to-br from-primary-blue-900 to-primary-blue-700 rounded-3xl overflow-hidden z-20 shadow-xl hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent-blue/30 transform transition duration-300 flex flex-col">
+            <img src="assets/images/razorpay.png" alt="Razorpay Clone" class="rounded-t-lg w-full h-56 object-cover" />
+            <div class="p-6 flex flex-col flex-grow">
+              <h3 class="text-2xl font-semibold font-heading mb-3 text-accent-blue">Razorpay Clone</h3>
+              <p class="text-text-dark mb-4 flex-grow text-md">
+                Razorpay homepage frontend clone with full responsiveness, TailwindCSS design, and interactive UI components.
+              </p>
+              <div class="mb-4 flex flex-wrap gap-2">
+                <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">HTML</span>
+                <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">Tailwind</span>
+                <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">Vite</span>
+              </div>
+              <div class="flex justify-between items-center mt-auto">
+                <a href="#" class="inline-block px-6 py-2 transition-all duration-300 bg-gradient-to-r from-[#0575E6] via-[#021B79] to-[#0575E6] bg-[length:200%_auto] bg-right hover:bg-left text-white rounded-full border border-blue-600">Live Demo</a>
+                <a href="#" class="inline-block text-accent-blue hover:text-accent-blue-light transition duration-300 flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0l-6 6"></path>
+                  </svg>
+                  GitHub
+                </a>
+              </div>
+            </div>
           </div>
-          <div class="flex justify-between items-center mt-auto">
-            <a href="#" class="inline-block px-6 py-2 transition-all duration-300 bg-gradient-to-r from-[#0575E6] via-[#021B79] to-[#0575E6] bg-[length:200%_auto] bg-right hover:bg-left text-white rounded-full border border-blue-600">Live Demo</a>
-            <a href="#" class="inline-block text-accent-blue hover:text-accent-blue-light transition duration-300 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0l-6 6"></path>
-              </svg>
-              GitHub
-            </a>
-          </div>
-        </div>
-      </div>
 
-      <!-- StudySync Website (restyled) -->
-      <div class="bg-gradient-to-br from-primary-blue-900 to-primary-blue-700 rounded-3xl overflow-hidden z-20 shadow-xl hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent-blue/30 transform transition duration-300 flex flex-col">
-        <img src="assets/images/studysync.png" alt="StudySync Frontend" class="rounded-t-lg w-full h-56 object-cover" />
-        <div class="p-6 flex flex-col flex-grow">
-          <h3 class="text-2xl font-semibold font-heading mb-3 text-accent-blue">StudySync</h3>
-          <p class="text-text-dark mb-4 flex-grow text-md">
-            Modern responsive EdTech landing page using TailwindCSS, featuring smooth UI elements and call-to-action sections.
-          </p>
-          <div class="mb-4 flex flex-wrap gap-2">
-            <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">HTML</span>
-            <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">CSS</span>
-          </div>
-          <div class="flex justify-between items-center mt-auto">
-            <a href="#" class="inline-block px-6 py-2 transition-all duration-300 bg-gradient-to-r from-[#0575E6] via-[#021B79] to-[#0575E6] bg-[length:200%_auto] bg-right hover:bg-left text-white rounded-full border border-blue-600">Live Demo</a>
-            <a href="#" class="inline-block text-accent-blue hover:text-accent-blue-light transition duration-300 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0l-6 6"></path>
-              </svg>
-              GitHub
-            </a>
-          </div>
-        </div>
-      </div>
 
+          <div class="bg-gradient-to-br from-primary-blue-900 to-primary-blue-700 rounded-3xl overflow-hidden z-20 shadow-xl hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent-blue/30 transform transition duration-300 flex flex-col">
+  <img src="assets/images/tripease.png" alt="Tripease Project" class="rounded-t-lg w-full h-56 object-cover" />
+  <div class="p-6 flex flex-col flex-grow">
+    <h3 class="text-2xl font-semibold font-heading mb-3 text-accent-blue">Tripease</h3>
+    <p class="text-text-dark mb-4 flex-grow text-md">
+      Travel booking web app for planning trips, finding stays, and managing itineraries.
+    </p>
+    <div class="mb-4 flex flex-wrap gap-2">
+      <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">HTML</span>
+      <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">CSS</span>
+      <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">JavaScript</span>
+      <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">MongoDB</span>
+      <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">Node.js</span>
+      <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">Express</span>
+    </div>
+    <div class="flex justify-between items-center mt-auto">
+      <a href="https://tripease-demo-link.vercel.app" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-2 transition-all duration-300 bg-gradient-to-r from-[#0575E6] via-[#021B79] to-[#0575E6] bg-[length:200%_auto] bg-right hover:bg-left text-white rounded-full border border-blue-600">Live Demo</a>
+      <a href="https://github.com/vinay-kumar-25/Tripease" target="_blank" rel="noopener noreferrer" class="inline-block text-accent-blue hover:text-accent-blue-light transition duration-300 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0l-6 6"></path>
+        </svg>
+        GitHub
+      </a>
     </div>
   </div>
-</section>
+</div>
 
+
+          <div class="bg-gradient-to-br from-primary-blue-900 to-primary-blue-700 rounded-3xl overflow-hidden z-20 shadow-xl hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent-blue/30 transform transition duration-300 flex flex-col">
+            <img src="assets/images/studysync.png" alt="StudySync Frontend" class="rounded-t-lg w-full h-56 object-cover" />
+            <div class="p-6 flex flex-col flex-grow">
+              <h3 class="text-2xl font-semibold font-heading mb-3 text-accent-blue">StudySync</h3>
+              <p class="text-text-dark mb-4 flex-grow text-md">
+                Modern responsive EdTech landing page using TailwindCSS, featuring smooth UI elements and call-to-action sections.
+              </p>
+              <div class="mb-4 flex flex-wrap gap-2">
+                <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">HTML</span>
+                <span class="bg-primary-blue-700 text-primary-blue-100 text-xs px-3 py-1 rounded-full font-medium">CSS</span>
+              </div>
+              <div class="flex justify-between items-center mt-auto">
+                <a href="#" class="inline-block px-6 py-2 transition-all duration-300 bg-gradient-to-r from-[#0575E6] via-[#021B79] to-[#0575E6] bg-[length:200%_auto] bg-right hover:bg-left text-white rounded-full border border-blue-600">Live Demo</a>
+                <a href="#" class="inline-block text-accent-blue hover:text-accent-blue-light transition duration-300 flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0l-6 6"></path>
+                  </svg>
+                  GitHub
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
 
     <section
       id="coding-stats"
@@ -852,34 +885,6 @@
       </div>
     </section>
 
-    <section
-      id="resume"
-      class="glow-container py-20 px-6 relative z-10 my-10 max-w-6xl mx-auto border-r-2 border-t-2 border-blue-600 bg-primary-blue-900 bg-opacity-40 backdrop-filter backdrop-blur-lg rounded-2xl text-center"
-      data-aos="fade-up"
-      data-aos-duration="1000"
-    >
-      <div class="container mx-auto">
-        <h2
-          class="text-4xl md:text-5xl font-semibold font-heading mb-12 text-accent-blue relative inline-block pb-3"
-        >
-          My Resume
-          <span
-            class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary-blue-500 rounded"
-          ></span>
-        </h2>
-        <p class="text-text-dark text-lg mb-8 max-w-2xl mx-auto">
-          Download my full resume for a detailed overview of my skills,
-          experience, and projects.
-        </p>
-        <a
-          href="assets/VINAY KUMAR Resume.pdf"
-          download
-          class="inline-flex items-center z-20 px-10 py-4 justify-center transition-all duration-300 bg-gradient-to-r from-[#0575E6] via-[#021B79] to-[#0575E6] bg-[length:200%_auto] bg-right hover:bg-left text-white rounded-full border border-blue-600"
-        >
-          <i class="fas fa-download mr-3"></i> Download Resume
-        </a>
-      </div>
-    </section>
 
     <section
       id="contact"
@@ -888,7 +893,7 @@
       data-aos-duration="1000"
     >
       <div class="container mx-auto text-center">
-         <h2
+          <h2
           class="text-4xl md:text-5xl font-semibold font-heading mb-12 text-center text-accent-blue relative inline-block pb-3"
         >
           Get in Touch
@@ -953,7 +958,6 @@
               Connect with Me
             </h3>
 
-            <!-- Contact Info -->
             <div
               class="space-y-6 text-lg text-gray-300 w-full flex flex-col items-center"
             >
@@ -981,7 +985,6 @@
               </p>
             </div>
 
-            <!-- Social Links Row 1 -->
             <div class="flex justify-around gap-4 mt-10">
               <a
                 href="https://github.com/vinay-kumar-25/"
@@ -1040,7 +1043,6 @@
               </a>
             </div>
 
-            <!-- Social Links Row 2 -->
             <div class="flex justify-around gap-4 mt-6">
               <a
                 href="https://www.instagram.com/mrvinaykumar531/"
@@ -1094,23 +1096,7 @@
       </div>
     </section>
 
-    <section
-      id="gallery"
-      class="glow-container py-16 px-6 relative z-10 my-10 max-w-6xl mx-auto border-r-2 border-t-2 border-blue-600 bg-primary-blue-900 bg-opacity-40 backdrop-filter backdrop-blur-lg rounded-2xl "
-      data-aos="fade-right"
-      data-aos-duration="1000"
-    >
-      <h2
-        class="text-4xl md:text-5xl font-semibold font-heading mb-12 text-accent-blue relative inline-block pb-3"
-      >
-        Gallery
-        <span
-          class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary-blue-500 rounded"
-        ></span>
-      </h2>
-      <div class="text-center font-semibold text-xl text-blue-700">Soon</div>
-    </section>
-
+    
     <footer
       class="bg-primary-blue-DEFAULT bg-opacity-90 backdrop-blur-sm py-8 mt-10 text-center text-primary-blue-200 text-sm relative z-10"
     >
@@ -1122,7 +1108,100 @@
       </div>
     </footer>
 
-    <script src="./assets/js/main.js"></script>
-    <script src="./assets/js/glow.js"></script>
-  </body>
+    <script>
+        // AOS Initialization
+        AOS.init();
+
+        // Typed.js Initialization
+        document.addEventListener("DOMContentLoaded", function() {
+            var typed = new Typed("#typed", {
+                strings: ["a MERN Stack Developer.", "a Full Stack Developer.", "a Competitive Programmer.", "an Aspiring Software Engineer."],
+                typeSpeed: 70,
+                backSpeed: 40,
+                loop: true,
+                cursorChar: '|',
+            });
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMobileMenuButton = document.getElementById('close-mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.remove('hidden');
+            mobileMenu.classList.add('fixed', 'inset-0', 'flex', 'justify-center', 'items-center');
+        });
+
+        closeMobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+            mobileMenu.classList.remove('fixed', 'inset-0', 'flex', 'justify-center', 'items-center');
+        });
+
+        // Close mobile menu when a link is clicked
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('fixed', 'inset-0', 'flex', 'justify-center', 'items-center');
+            });
+        });
+
+
+        // --- Glow Effect JavaScript ---
+        document.querySelectorAll(".glow-container").forEach(container => {
+            // Ensure the container has relative positioning
+            container.style.position = "relative";
+
+            const overlay = document.createElement("div");
+            overlay.className = "dummy-overlay";
+            container.appendChild(overlay);
+
+            const glow = document.createElement("div");
+            glow.className = "glow";
+            overlay.appendChild(glow);
+
+            // Initial hide of glow (off-screen and opaque)
+            glow.style.transform = `translate(-9999px, -9999px)`;
+            glow.style.opacity = "0";
+
+            let rafScheduled = false;
+            let lastX = 0;
+            let lastY = 0;
+            const glowWidth = 1100; // From your CSS
+            const glowHeight = 750; // From your CSS
+
+            const updateGlowPosition = () => {
+                // Calculate glow position relative to the container, centered on the cursor
+                glow.style.transform = `translate(${lastX - glowWidth / 2}px, ${lastY - glowHeight / 2}px)`;
+                rafScheduled = false;
+            };
+
+            container.addEventListener("mousemove", e => {
+                const rect = container.getBoundingClientRect();
+                lastX = e.clientX - rect.left;
+                lastY = e.clientY - rect.top;
+
+                // Make glow visible if it's not already
+                if (glow.style.opacity === "0") {
+                    glow.style.opacity = "0.85";
+                }
+
+                // Schedule the update on the next animation frame
+                if (!rafScheduled) {
+                    rafScheduled = true;
+                    requestAnimationFrame(updateGlowPosition);
+                }
+            });
+
+            container.addEventListener("mouseleave", () => {
+                // Instantly move off-screen and fade out
+                glow.style.transform = `translate(-9999px, -9999px)`;
+                glow.style.opacity = "0";
+                rafScheduled = false; // Cancel any pending animation frame
+            });
+        });
+        // --- End Glow Effect JavaScript ---
+
+    </script>
+</body>
 </html>

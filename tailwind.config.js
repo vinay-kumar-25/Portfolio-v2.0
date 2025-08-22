@@ -19,9 +19,9 @@ content: ["./index.html", "./assets/js/**/*.{js,jsx,ts,tsx,html}"],
           900: '#000020',
         },
         'accent-blue': { // Actually orange shades now
-  light: '#FFD6A5',  // Light orange-peach (soft, warm)
-  DEFAULT: '#FFD6A5', // Vibrant orange (main accent)
-  dark: '#D9480F',    // Dark burnt orange (strong accents)
+ light: '#FFDAB9',   // Peach-Orange (if you want a softer light option)
+  DEFAULT: '#FF8C00', // Dark Orange / Tangerine (energetic, less 'peach')
+  dark: '#CC5500',      // Dark burnt orange (strong accents)
 },
 
         'text-light': '#F8FAFC', // Near white for main text

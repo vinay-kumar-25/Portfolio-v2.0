@@ -21,14 +21,14 @@ style.textContent = `
     pointer-events: none;
     border-radius: 50%;
 background: radial-gradient(
-  ellipse 55% 40% at 50% 50%,
-  rgba(169, 199, 250, 0.9) 0%,   /* Bright, almost glowing white-blue core */
-  rgba(100, 150, 255, 0.7) 15%,  /* Transition to a lighter neon blue */
-  rgba(31, 81, 255, 0.5) 35%,    /* Main vibrant neon blue */
-  rgba(31, 81, 255, 0.3) 55%,
-  rgba(31, 81, 255, 0.15) 75%,
-  rgba(31, 81, 255, 0.05) 90%,
-  rgba(31, 81, 255, 0) 100%
+  ellipse 50% 40% at 50% 50%,
+  rgba(255, 255, 255, 0.9) 0%,    /* Bright white core */
+  rgba(255, 190, 255, 0.8) 10%,   /* Soft pink-purple */
+  rgba(200, 100, 255, 0.6) 25%,   /* Vibrant lavender */
+  rgba(150, 50, 255, 0.4) 45%,    /* Deep electric purple */
+  rgba(100, 20, 200, 0.2) 65%,    /* Darker indigo-purple */
+  rgba(50, 10, 100, 0.08) 80%,    /* Very deep purple hint */
+  rgba(0, 0, 0, 0) 100%
 );
     filter: blur(12px);             /* Extra smoothness */
     mix-blend-mode: screen;
