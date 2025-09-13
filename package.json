@@ -1,7 +1,10 @@
 {
   "scripts": {
-    "start": "vite"
-  },
+  "dev": "vite --host",
+  "build:css": "postcss src/input.css -o dist/output.css",
+  "watch:css": "tailwindcss -i ./input.css -o ./output.css --watch"
+}
+,
   "devDependencies": {
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.21",

@@ -31,25 +31,17 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
 
     <style>
+      
       body {
         overflow-x: hidden;
         font-family: "Inter", sans-serif;
-        color: theme("colors.text-light");
-        background-image: url(./images/bg.jpg);
         background-position: center;
         background-attachment: fixed;
         background-size: cover;
         background-repeat: no-repeat;
         background-color: white; /* Fallback */
       }
-      #three-canvas {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        z-index: -1;
-      }
+     
       .blinking-cursor {
         opacity: 1;
         animation: blink 0.7s infinite;
@@ -87,44 +79,56 @@
         border-radius: 20px; /* Adjust if your containers have different radii */
       }
       .dummy-overlay {
-        position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        border-radius: inherit; /* Inherit border-radius from parent */
-        overflow: hidden; /* Crucial to clip the large glow div */
-        pointer-events: none; /* Allows clicks/hovers to pass through */
-        background: transparent;
-        z-index: 10; /* Ensure overlay is above container content but below actual content */
-      }
-      .glow {
-        position: absolute;
-        top: 0; left: 0;
-        width: 1100px;   /* Super wide for a large coverage */
-        height: 750px;   /* Super tall for ultra-smoothness */
-        pointer-events: none; /* Allows clicks/hovers to pass through */
-        border-radius: 50%; /* Makes it a circle */
-        background: radial-gradient(
-          ellipse 50% 40% at 50% 50%,
-          rgba(255, 255, 255, 0.726) 0%,     /* Bright white core */
-          rgba(255, 190, 255, 0.67) 10%,    /* Soft pink-purple */
-          rgba(200, 100, 255, 0.6) 25%,    /* Vibrant lavender */
-          rgba(158, 67, 255, 0.3) 45%,     /* Deep electric purple */
-          rgba(100, 20, 200, 0.2) 65%,     /* Darker indigo-purple */
-          rgba(50, 10, 100, 0.08) 80%,     /* Very deep purple hint */
-          rgba(0, 0, 0, 0) 100%
-        );
-        filter: blur(12px); /* Soften the glow edges */
-        mix-blend-mode: screen; /* Blends nicely with dark backgrounds */
-        transition: transform 0.25s cubic-bezier(.4,1.4,.6,1), opacity 0.2s; /* Smooth movement and fade */
-        opacity: 0; /* Initially hidden */
-        will-change: transform; /* Hint to browser for GPU acceleration */
-      }
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  background: transparent;
+  z-index: 0; /* push behind content */
+}
+
+.glow {
+  position: absolute;
+  top: 0; left: 0;
+  width: 1100px;
+  height: 750px;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse 50% 40% at 50% 50%,
+    rgba(255, 255, 255, 0.726) 0%,
+    rgba(255, 190, 255, 0.67) 10%,
+    rgba(200, 100, 255, 0.6) 25%,
+    rgba(158, 67, 255, 0.3) 45%,
+    rgba(100, 20, 200, 0.2) 65%,
+    rgba(50, 10, 100, 0.08) 80%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  filter: blur(12px);
+  mix-blend-mode: screen;
+  transition: transform 0.25s cubic-bezier(.4,1.4,.6,1), opacity 0.2s;
+  opacity: 0;
+  will-change: transform;
+  z-index: 0; /* keep glow behind */
+}
+
       /* --- End Glow Effect Styles --- */
 
     </style>
 </head>
 
-<body class="font-sans text-text-light">
-    <canvas id="three-canvas"></canvas>
+<body class="font-sans text-text-light bg-gradient-to-br from-primary-blue-700 to to-primary-blue-900">
+  <svg class="fixed top-0 left-0 w-full h-full -z-10">
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path class="grid-path" d="M 60 0 L 0 0 0 60" fill="none" stroke="grey  " stroke-width="1"></path>
+    </pattern>
+    <rect width="100%" height="100%" fill="url(#grid)"></rect>
+  </svg>
+
+
+    
 
     <header
       class="fixed top-0 left-0 w-full bg-primary-blue-900 bg-opacity-30 backdrop-blur-md shadow-lg z-50"
@@ -148,7 +152,7 @@
               class="relative text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-blue-700 transition duration-300 before:absolute before:-bottom-1 before:left-0 before:w-0 before:h-0.5 before:bg-gradient-to-r before:from-blue-400 before:to-blue-700 before:rounded-full before:transition-all before:duration-300 hover:before:w-full"
             >
               <span
-                class="text-text-light hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-700 transition duration-300"
+                class="text-gray-300 font-semibold hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-700 transition duration-300"
                 >Home</span
               >
             </a>
@@ -159,7 +163,7 @@
               class="relative text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-blue-700 transition duration-300 before:absolute before:-bottom-1 before:left-0 before:w-0 before:h-0.5 before:bg-gradient-to-r before:from-blue-400 before:to-blue-700 before:rounded-full before:transition-all before:duration-300 hover:before:w-full"
             >
               <span
-                class="text-text-light hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-700 transition duration-300"
+                class="text-gray-300 font-semibold hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-700 transition duration-300"
                 >About</span
               >
             </a>
@@ -170,7 +174,7 @@
               class="relative text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-blue-700 transition duration-300 before:absolute before:-bottom-1 before:left-0 before:w-0 before:h-0.5 before:bg-gradient-to-r before:from-blue-400 before:to-blue-700 before:rounded-full before:transition-all before:duration-300 hover:before:w-full"
             >
               <span
-                class="text-text-light hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-700 transition duration-300"
+                class="text-gray-300 font-semibold hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-700 transition duration-300"
                 >Skills</span
               >
             </a>
@@ -181,7 +185,7 @@
               class="relative text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-blue-700 transition duration-300 before:absolute before:-bottom-1 before:left-0 before:w-0 before:h-0.5 before:bg-gradient-to-r before:from-blue-400 before:to-blue-700 before:rounded-full before:transition-all before:duration-300 hover:before:w-full"
             >
               <span
-                class="text-text-light hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-700 transition duration-300"
+                class="text-gray-300 font-semibold hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-700 transition duration-300"
                 >Projects</span
               >
             </a>
@@ -193,7 +197,7 @@
               class="relative text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-blue-700 transition duration-300 before:absolute before:-bottom-1 before:left-0 before:w-0 before:h-0.5 before:bg-gradient-to-r before:from-blue-400 before:to-blue-700 before:rounded-full before:transition-all before:duration-300 hover:before:w-full"
             >
               <span
-                class="text-text-light hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-700 transition duration-300"
+                class="text-gray-300 font-semibold hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-700 transition duration-300"
                 >Contact</span
               >
             </a>
@@ -201,7 +205,7 @@
         </ul>
         <button
           id="mobile-menu-button"
-          class="md:hidden text-text-light hover:text-accent-blue-light focus:outline-none"
+          class="md:hidden text-text-light z-40 hover:text-accent-blue-light focus:outline-none"
         >
           <svg
             class="w-8 h-8"
@@ -222,37 +226,28 @@
       
       <div
         id="mobile-menu"
-        class="hidden md:hidden fixed z-20 flex items-center justify-center  bg-black bg-opacity-5 backdrop-blur-xl md:right-0"
+        class=" md:hidden w-full h-screen hidden  fixed  transition-all    flex items-start  justify-center "
       >
-        <div class="bg-gradient-to-br from-[#0c0c14] to-[#2e2e3a]  border border-white/20 rounded-2xl px-6 py-8 w-[50%] max-w-xs shadow-2xl text-center text-white relative">
+        <div class=" border relative bg-gradient-to-br from-primary-blue-700 to bg-primary-blue-900 bg-opacity-20  rounded-md  ">
+         
           
-          <button
-            id="close-mobile-menu"
-            class="absolute top-3 right-1 text-white hover:text-blue-400 transition"
-          >
-            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-
-          <nav class="flex flex-col gap-6 text-lg font-semibold mt-6">
+          <nav class="flex flex-col relative gap-6 text-lg items-center py-10 px-20  font-semibold mt-6">
+           
             <a href="#home" class="hover:text-blue-400 transition">Home</a>
             <a href="#about" class="hover:text-blue-400 transition">About</a>
             <a href="#skills" class="hover:text-blue-400 transition">Skills</a>
             <a href="#projects" class="hover:text-blue-400 transition">Projects</a>
-            <a href="#coding-stats" class="hover:text-blue-400 transition">Coding Stats</a>
-            <a href="#education" class="hover:text-blue-400 transition">Education</a>
-            <a href="#certificates" class="hover:text-blue-400 transition">Certificates</a>
             <a href="#contact" class="hover:text-blue-400 transition">Contact</a>
           </nav>
         </div>
+
       </div>
     </header>
+  
 
     <section
       id="home"
-      class="min-h-screen flex flex-col justify-center items-center px-6 text-center pt-20 relative z-10 overflow-hidden bg-gradient-to-br from-primary-blue-DEFAULT to-primary-blue-700"
+      class="min-h-screen flex flex-col justify-center items-center px-6 text-center pt-20 relative z-10 overflow-hidden "
       data-aos="fade-up"
       data-aos-duration="1200"
     >
@@ -291,74 +286,69 @@
           data-aos="fade-up"
           data-aos-delay="800"
         >
-          <a
-            href="#projects"
-            class="px-10 py-4 flex justify-center items-center transition-all duration-300 bg-gradient-to-r from-[#0575E6] via-[#021B79] to-[#0575E6] bg-[length:200%_auto] bg-right hover:bg-left text-white rounded-full border border-blue-600"
-          >
-            Explore My Work
-          </a>
-          <a
-            href="#contact"
-            class="px-10 py-4 rounded-full shadow-lg transform transition duration-300 font-semibold text-lg border-2 border-accent-blue text-accent-blue hover:bg-accent-blue hover:text-primary-blue-900"
-          >
-            Get In Touch
-          </a>
+         <a
+  href="#projects"
+  class="px-10 py-4 flex justify-center items-center transition-all duration-300 bg-gradient-to-r from-[#0575E6] via-[#021B79] to-[#0575E6] bg-[length:200%_auto] bg-right hover:bg-left text-white rounded-full border border-blue-600"
+>
+  Explore My Work
+</a>
+
+<a
+  href="#contact"
+  class="px-10 py-4 flex justify-center items-center transition-all duration-300 bg-gradient-to-r from-[#FFDD00] via-[#FF8000] to-[#FF0000] bg-[length:200%_auto] bg-right hover:bg-left text-white rounded-full border border-red-500"
+>
+  Get In Touch
+</a>
+
         </div>
       </div>
     </section>
 
-    <section
+    
+    
+       <section
       id="about"
-      class="py-20 px-6 relative z-10 my-12 max-w-6xl mx-auto rounded-3xl bg-primary-blue-950 glow-container border-r-2 border-t-2 border-blue-700"
+      class="py-20 px-6 relative z-10 my-10 max-w-6xl mx-auto border-r-2 border-t-2 border-blue-600 bg-primary-blue-900 bg-opacity-40 backdrop-blur-lg rounded-2xl  glow-container"
+      data-aos="fade-left"
+      data-aos-duration="1000"
     >
+      <div class="container mx-auto  ">
         <h2
-          class="text-4xl md:text-5xl font-semibold font-heading mb-12 text-center text-accent-blue relative inline-block pb-3"
+          class="text-4xl md:text-5xl z-30 font-semibold font-heading mb-12 text-center text-accent-blue relative inline-block pb-3"
         >
-          About Me
+          About me
           <span
             class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary-blue-500 rounded"
           ></span>
         </h2>
 
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center bg-primary-blue-900 bg-opacity-50 backdrop-blur-lg rounded-2xl p-8 md:p-14 shadow-2xl-custom "
-        >
-          <div
-            class="flex flex-col items-center z-20"
+         <div
+            class="flex relative z-10 items-center flex-wrap md:flex-nowrap"
             data-aos="zoom-in"
             data-aos-delay="200"
             data-aos-duration="1000"
           >
-            <div class="relative group w-64 h-64 md:w-72 md:h-72 mx-auto">
-              <div
-                class="absolute inset-0 rounded-full pointer-events-none transition-all duration-500 group-hover:shadow-[0_0_40px_10px_rgba(56,189,248,0.40)]"
-                aria-hidden="true"
-              ></div>
+            <div class=" mb-10 relative z-20 aspect-square group w-48 h-48 md:w-72 md:h-72 mx-auto">
               <img
-              class="w-full h-full object-cover rounded-full border-2 border-primary-blue-500 shadow-xl transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-2 "
+              class="w-full h-full relative z-20  object-cover rounded-full border-2 border-primary-blue-500 shadow-xl transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-1 group-hover:-translate-y-2"
                 src="images/vinay.jpg"
                 alt="Profile Photo"
               />
-              <div
-                class="absolute inset-0 rounded-full bg-gradient-to-t from-primary-blue-900/70 to-transparent opacity-60 pointer-events-none"
-                aria-hidden="true"
-              ></div>
             </div>
-          </div>
-
+        
           <div
-            class="text-lg leading-relaxed text-slate-400 space-y-6 md:pl-6"
+            class="text-xs md:text-lg leading-relaxed text-slate-400  md:px-4   space-y-6 md:pl-6"
             data-aos="fade-left"
             data-aos-delay="400"
             data-aos-duration="1000"
           >
-            <p>
+            <p class="hover:translate-x-2 hover:-translate-y-2 duration-300 z-40  p-8 rounded-lg bg-gradient-to-br from-primary-blue-700 to-primary-blue-900   ">
               I'm a passionate software engineer with a strong grasp of data
               structures, algorithms, and modern web technologies. I build
               intuitive, efficient, and scalable web applications that solve
               real-world problems.
             </p>
-            <p>
+              <p class="hover:translate-x-2 hover:-translate-y-2 duration-300  z-40 p-8 rounded-lg bg-gradient-to-br from-primary-blue-700 to-primary-blue-900   ">
               Skilled in both front-end and back-end development, I actively
               enhance my expertise through competitive programming and exploring
               new tech. I value collaboration and write clean, maintainable code
@@ -366,8 +356,14 @@
             </p>
           </div>
         </div>
-      
+
+        
+      </div>
+       <div class="dummy-overlay">
+        <div class="glow"></div>
+    </div>
     </section>
+
 
     <section
       id="skills"
@@ -386,7 +382,7 @@
         </h2>
 
         <div
-          class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8 text-center"
+          class="grid grid-cols-3 gap-4 sm:grid-cols-3 lg:grid-cols-6 md:gap-8 text-center"
         >
           <div
             class="border-l-2 border-b-2 hover:skew-z-6 z-50 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
@@ -394,10 +390,10 @@
             <img
               src="assets/icons/React-Dark.svg"
               alt="React.js Icon"
-              class="w-12 h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
+              class="w-8 h-8 md:w-12 md:h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
             />
             <p
-              class="text-primary-blue-200 font-semisemifont-semibold text-lg group-hover:-translate-y-1 transition-all duration-300"
+              class="text-primary-blue-200 font-semibold text-xs md:text-lg group-hover:-translate-y-1 transition-all duration-300"
             >
               React.js
             </p>
@@ -408,10 +404,10 @@
             <img
               src="assets/icons/NodeJS-Dark.svg"
               alt="Node.js Icon"
-              class="w-12 h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
+              class="w-8 h-8 md:w-12 md:h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
             />
             <p
-              class="text-primary-blue-200 font-semisemifont-semibold text-lg group-hover:-translate-y-1 transition-all duration-300"
+              class="text-primary-blue-200 font-semibold text-xs md:text-lg group-hover:-translate-y-1 transition-all duration-300"
             >
               Node.js
             </p>
@@ -422,10 +418,10 @@
             <img
               src="assets/icons/express-js-icon.svg"
               alt="Express.js Icon"
-              class="text-white w-12 h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
+              class="text-white w-8 h-8 md:w-12 md:h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
             />
             <p
-              class="text-primary-blue-200 font-semisemifont-semibold text-lg group-hover:-translate-y-1 transition-all duration-300"
+              class="text-primary-blue-200 font-semibold text-xs md:text-lg group-hover:-translate-y-1 transition-all duration-300"
             >
               Express.js
             </p>
@@ -436,10 +432,10 @@
             <img
               src="assets/icons/MongoDB.svg"
               alt="MongoDB Icon"
-              class="w-12 h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
+              class="w-8 h-8 md:w-12 md:h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
             />
             <p
-              class="text-primary-blue-200 font-semisemifont-semibold text-lg group-hover:-translate-y-1 transition-all duration-300"
+              class="text-primary-blue-200 font-semibold text-xs md:text-lg group-hover:-translate-y-1 transition-all duration-300"
             >
               MongoDB
             </p>
@@ -450,10 +446,10 @@
             <img
               src="assets/icons/Firebase-Dark.svg"
               alt="Firebase Icon"
-              class="w-12 h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
+              class="w-8 h-8 md:w-12 md:h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
             />
             <p
-              class="text-primary-blue-200 font-semisemifont-semibold text-lg group-hover:-translate-y-1 transition-all duration-300"
+              class="text-primary-blue-200 font-semibold text-xs md:text-lg group-hover:-translate-y-1 transition-all duration-300"
             >
               Firebase
             </p>
@@ -464,10 +460,10 @@
             <img
               src="assets/icons/MySQL-Dark.svg"
               alt="MYSQL Icon"
-              class="w-12 h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
+              class="w-8 h-8 md:w-12 md:h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
             />
             <p
-              class="text-primary-blue-200 font-semisemifont-semibold text-lg group-hover:-translate-y-1 transition-all duration-300"
+              class="text-primary-blue-200 font-semibold text-xs md:text-lg group-hover:-translate-y-1 transition-all duration-300"
             >
               MYSQL
             </p>
@@ -478,10 +474,10 @@
             <img
               src="assets/icons/JavaScript.svg"
               alt="JavaScript Icon"
-              class="w-12 h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
+              class="w-8 h-8 md:w-12 md:h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
             />
             <p
-              class="text-primary-blue-200 font-semisemifont-semibold text-lg group-hover:-translate-y-1 transition-all duration-300"
+              class="text-primary-blue-200 font-semibold text-xs md:text-lg group-hover:-translate-y-1 transition-all duration-300"
             >
               JavaScript
             </p>
@@ -490,12 +486,26 @@
             class="border-l-2 border-b-2 hover:skew-z-6 z-50 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
           >
             <img
-              src="assets/icons/Python-Dark.svg"
-              alt="Python Icon"
-              class="w-12 h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
+              src="assets/icons/Redux.svg"
+              alt="JavaScript Icon"
+              class="w-8 h-8 md:w-12 md:h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
             />
             <p
-              class="text-primary-blue-200 font-semisemifont-semibold text-lg group-hover:-translate-y-1 transition-all duration-300"
+              class="text-primary-blue-200 font-semibold text-xs md:text-lg group-hover:-translate-y-1 transition-all duration-300"
+            >
+              Redux
+            </p>
+          </div>
+          <div
+            class="border-l-2 border-b-2 hover:skew-z-6 z-50 border-primary-blue-500 group transition-all bg-gradient-to-tr from-primary-blue-700 to bg-primary-blue-900 px-0 py-6 rounded-3xl shadow-xl hover:shadow-3xl hover:shadow-blue-500 ease-in-out duration-300"
+          >
+            <img
+              src="assets/icons/Python-Dark.svg"
+              alt="Python Icon"
+              class="w-8 h-8 md:w-12 md:h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
+            />
+            <p
+              class="text-primary-blue-200 font-semibold text-xs md:text-lg group-hover:-translate-y-1 transition-all duration-300"
             >
               Python
             </p>
@@ -506,10 +516,10 @@
             <img
               src="assets/icons/CPP.svg"
               alt="C++ Icon"
-              class="w-12 h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
+              class="w-8 h-8 md:w-12 md:h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
             />
             <p
-              class="text-primary-blue-200 font-semisemifont-semibold text-lg group-hover:-translate-y-1 transition-all duration-300"
+              class="text-primary-blue-200 font-semibold text-xs md:text-lg group-hover:-translate-y-1 transition-all duration-300"
             >
               C++
             </p>
@@ -520,10 +530,10 @@
             <img
               src="assets/icons/HTML.svg"
               alt="HTML5 Icon"
-              class="w-12 h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
+              class="w-8 h-8 md:w-12 md:h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
             />
             <p
-              class="text-primary-blue-200 font-semisemifont-semibold text-lg group-hover:-translate-y-1 transition-all duration-300"
+              class="text-primary-blue-200 font-semibold text-xs md:text-lg group-hover:-translate-y-1 transition-all duration-300"
             >
               HTML5
             </p>
@@ -534,10 +544,10 @@
             <img
               src="assets/icons/CSS.svg"
               alt="CSS3 Icon"
-              class="w-12 h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
+              class="w-8 h-8 md:w-12 md:h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
             />
             <p
-              class="text-primary-blue-200 font-semisemifont-semibold text-lg group-hover:-translate-y-1 transition-all duration-300"
+              class="text-primary-blue-200 font-semibold text-xs md:text-lg group-hover:-translate-y-1 transition-all duration-300"
             >
               CSS3
             </p>
@@ -548,10 +558,10 @@
             <img
               src="assets/icons/TailwindCSS-Dark.svg"
               alt="Tailwind CSS Icon"
-              class="w-12 h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
+              class="w-8 h-8 md:w-12 md:h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
             />
             <p
-              class="text-primary-blue-200 font-semisemifont-semibold text-lg group-hover:-translate-y-1 transition-all duration-300"
+              class="text-primary-blue-200 font-semibold text-xs md:text-lg group-hover:-translate-y-1 transition-all duration-300"
             >
               Tailwind CSS
             </p>
@@ -562,10 +572,10 @@
             <img
               src="assets/icons/Github-Dark.svg"
               alt="Git Icon"
-              class="w-12 h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
+              class="w-8 h-8 md:w-12 md:h-16 mx-auto mb-4 group-hover:-translate-y-3 transition-all duration-500 filter drop-shadow-lg"
             />
             <p
-              class="text-primary-blue-200 font-semisemifont-semibold text-lg group-hover:-translate-y-1 transition-all duration-300"
+              class="text-primary-blue-200 font-semibold text-xs md:text-lg group-hover:-translate-y-1 transition-all duration-300"
             >
               Git & GitHub
             </p>
@@ -727,11 +737,11 @@
             <div
               class="text-5xl font-extrasemifont-semibold text-accent-blue mb-2"
             >
-              360<span class="text-lg text-text-dark"> / 3586</span>
+              450<span class="text-lg text-text-dark"> / 3586</span>
             </div>
             <p class="text-text-dark text-lg mb-4">Problems Solved</p>
             <a
-              href="https://leetcode.com/u/Vinaykumar9814/"
+              href="https://leetcode.com/u/VinayKumar1225/"
               target="_blank"
               rel="noopener noreferrer"
               class="inline-flex items-center px-6 py-3 justify-center transition-all duration-300 bg-gradient-to-r from-[#0575E6] via-[#021B79] to-[#0575E6] bg-[length:200%_auto] bg-right hover:bg-left text-white rounded-full border border-blue-600"
@@ -812,7 +822,7 @@
             <div
               class="text-5xl font-extrasemifont-semibold text-accent-blue mb-2"
             >
-              60
+              70
             </div>
             <p class="text-text-dark text-lg mb-4">Problems Solved</p>
             <a
@@ -855,7 +865,7 @@
             <div
               class="text-5xl font-extrasemifont-semibold text-accent-blue mb-2"
             >
-              50+
+              90+
             </div>
             <p class="text-text-dark text-lg mb-4">Contributions</p>
             <a
@@ -1020,7 +1030,7 @@
                 />
               </a>
               <a
-                href="https://leetcode.com/u/Vinaykumar9814/"
+                href="https://leetcode.com/u/VinayKumar1225/"
                 target="_blank"
                 class="hover:shadow-blue-300 hover:-translate-y-2 hover:shadow-lg hover:scale-105 rounded-xl transition duration-300"
               >
@@ -1124,27 +1134,24 @@
         });
 
         // Mobile Menu Toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const closeMobileMenuButton = document.getElementById('close-mobile-menu');
+      let ham = document.getElementById("mobile-menu-button");
+      let mobmenu = document.getElementById("mobile-menu");
+      ham.addEventListener("click",()=>{
+    if(mobmenu.classList.contains("hidden"))
+        mobmenu.classList.remove("hidden")
+      else
+      mobmenu.classList.add("hidden")
 
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.remove('hidden');
-            mobileMenu.classList.add('fixed', 'inset-0', 'flex', 'justify-center', 'items-center');
-        });
+      })
+      
+      let links = mobmenu.querySelectorAll("a");
+  links.forEach(link => {
+    link.addEventListener("click", () => {
+      mobmenu.classList.add("hidden");
+    });
+  });
+        
 
-        closeMobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.add('hidden');
-            mobileMenu.classList.remove('fixed', 'inset-0', 'flex', 'justify-center', 'items-center');
-        });
-
-        // Close mobile menu when a link is clicked
-        mobileMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-                mobileMenu.classList.remove('fixed', 'inset-0', 'flex', 'justify-center', 'items-center');
-            });
-        });
 
 
         // --- Glow Effect JavaScript ---
@@ -1163,6 +1170,7 @@
             // Initial hide of glow (off-screen and opaque)
             glow.style.transform = `translate(-9999px, -9999px)`;
             glow.style.opacity = "0";
+            glow.style.zIndex = "10";
 
             let rafScheduled = false;
             let lastX = 0;
